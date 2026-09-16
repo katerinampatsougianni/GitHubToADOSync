@@ -1,0 +1,22 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self
+    displayName: 'Checkout files from GitHub'
+
+  - script: |
+      echo "✅ Files successfully pulled from GitHub!"
+      echo "📁 Files in repo:"
+      ls -la
+    displayName: 'Show files from GitHub'
+
+  - script: |
+      echo "🚀 Deployment would happen here!"
+      echo "Branch: $(Build.SourceBranchName)"
+      echo "Triggered by: $(Build.RequestedFor)"
+      echo "Commit: $(Build.SourceVersion)"
+    displayName: 'Simulate Deploy'
