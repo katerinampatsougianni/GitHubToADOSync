@@ -1,0 +1,38 @@
+name: Bicep Validate Pipeline
+
+trigger:
+  branches:
+    include:
+      - main
+      - development
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+
+  - stage: Validate
+    displayName: '🔍 Validate Bicep Syntax'
+    jobs:
+      - job: Validate
+        steps:
+          - checkout: self
+
+          - script: |
+              echo "📦 Installing Bicep CLI..."
+              curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+              chmod +x ./bicep
+              sudo mv ./bicep /usr/local/bin/bicep
+              bicep --version
+            displayName: 'Install Bicep CLI'
+
+          - script: |
+              echo "🔍 Validating Bicep files..."
+              bicep build infra/main.bicep
+              echo "✅ Bicep syntax is valid!"
+            displayName: 'Validate Bicep'
+
+          - script: |
+              echo "📋 Bicep files found:"
+              find . -name "*.bicep" -type f
+            displayName: 'List Bicep files'
